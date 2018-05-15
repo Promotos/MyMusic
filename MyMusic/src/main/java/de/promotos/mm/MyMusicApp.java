@@ -1,3 +1,4 @@
+package de.promotos.mm;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
@@ -21,7 +22,13 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 
-public class Application {
+import de.promotos.mm.scene.SceneFactory;
+import javafx.application.Application;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class MyMusicApp extends Application {
 
 	/**
 	 * Be sure to specify the name of your application. If the application name is
@@ -49,10 +56,22 @@ public class Application {
 	private static Drive drive;
 
 	public static void main(String[] args) {
-		new Application().run(args);
+		MyMusicApp.launch(args);
 	}
-
-	private void run(String[] args) {
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		final Parent root = new SceneFactory().loadMainScene();
+        final Scene scene = new Scene(root);
+        
+        primaryStage.setTitle("My Music");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        
+        new MyMusicApp().drive();
+	}
+	
+	private void drive() {
 		try {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 			dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
@@ -121,7 +140,7 @@ public class Application {
 
 	private static Credential authorize() throws Exception {
 		final GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-				new InputStreamReader(Application.class.getResourceAsStream("/secret.json")));
+				new InputStreamReader(MyMusicApp.class.getResourceAsStream("/secret.json")));
 		final GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
 				clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(dataStoreFactory).build();
 		return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
