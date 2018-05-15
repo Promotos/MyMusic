@@ -3,7 +3,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 
-mainClassName = 'DriveQuickstart'
+mainClassName = 'de.promotos.mm.Application'
 sourceCompatibility = 1.9
 targetCompatibility = 1.9
 version = '1.0'

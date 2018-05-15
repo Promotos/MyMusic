@@ -7,3 +7,6 @@
     Click OK to dismiss the resulting dialog.
     Click the file_download (Download JSON) button to the right of the client ID.
     Move this file to your working directory and rename it client_secret.json.
+    
+Error 500 on oAuth page    
+Must add &hd= to browser url
