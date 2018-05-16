@@ -7,8 +7,9 @@ import javafx.scene.Parent;
 
 public class SceneFactory {
 
-	public final Parent loadMainScene() throws IOException {
-		return FXMLLoader.load(getClass().getResource("MainScene.fxml"));
+	public static final FXMLLoader loadMainScene() throws IOException {
+		final FXMLLoader result = new FXMLLoader(SceneFactory.class.getResource("MainScene.fxml"));
+		return result;
 	}
 	
 }
