@@ -12,4 +12,8 @@ public class MainSceneController {
     @FXML protected void btnActionClick(ActionEvent event) {
         System.out.println("button pressed");
     }
+    
+    public void update(String s) {
+    	btnAction.setText(s);
+    }
 }
