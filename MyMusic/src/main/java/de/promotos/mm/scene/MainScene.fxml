@@ -6,9 +6,11 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -35,11 +37,11 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane dividerPositions="0.2505567928730512, 0.5" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <SplitPane dividerPositions="0.18295739348370926, 0.6854636591478697" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
         <AnchorPane prefHeight="550.0" prefWidth="174.0">
           <children>
-            <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Tags" textAlignment="CENTER" wrapText="false">
+            <Label alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Tags" textAlignment="CENTER" wrapText="false">
               <font>
                 <Font size="18.0" fx:id="x1" />
               </font>
@@ -47,29 +49,36 @@
                 <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
               </textFill>
             </Label>
-                  <TreeView editable="true" layoutX="10.0" layoutY="51.0" prefHeight="495.0" prefWidth="112.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0" />
+                  <TreeView editable="true" layoutX="10.0" layoutY="63.0" prefHeight="477.0" prefWidth="123.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="63.0" />
+                  <Label layoutX="14.0" layoutY="41.0" text="Available Tags" />
           </children>
         </AnchorPane>
-        <ScrollPane minWidth="-Infinity" prefHeight="550.0" prefWidth="300.0">
-          <content>
-            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="344.0" prefWidth="136.0">
-              <children>
-                <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Files" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-              </children>
-            </AnchorPane>
-          </content>
-        </ScrollPane>
+      <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="234.0" prefWidth="230.0">
+        <children>
+          <Label alignment="TOP_LEFT" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Files" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                  <Label layoutX="14.0" layoutY="41.0" text="Available audio files on the cloud" />
+                  <TableView layoutX="14.0" layoutY="58.0" prefHeight="443.0" prefWidth="366.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="58.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+                  <Button layoutX="14.0" layoutY="511.0" mnemonicParsing="false" text="Upload" />
+                  <Button layoutX="76.0" layoutY="511.0" mnemonicParsing="false" text="Delete" />
+        </children>
+      </AnchorPane>
         <AnchorPane prefHeight="351.0" prefWidth="150.0">
           <children>
-            <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Player" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-                  <Button fx:id="btnAction" layoutX="69.0" layoutY="171.0" mnemonicParsing="false" onAction="#btnActionClick" text="Button" />
+            <Label alignment="TOP_LEFT" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Player" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                  <Button fx:id="btnAction" layoutX="12.0" layoutY="511.0" mnemonicParsing="false" onAction="#btnActionClick" text="Button" />
+                  <Label layoutX="14.0" layoutY="41.0" text="Files selected for playback" />
           </children>
         </AnchorPane>
       </items>
     </SplitPane>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
       <children>
-        <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status ..." HBox.hgrow="ALWAYS">
+        <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ..." HBox.hgrow="ALWAYS">
           <font>
             <Font size="11.0" fx:id="x3" />
           </font>
@@ -78,7 +87,7 @@
           </textFill>
         </Label>
         <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-        <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
+            <ProgressBar prefWidth="200.0" progress="0.5" />
       </children>
       <padding>
         <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
