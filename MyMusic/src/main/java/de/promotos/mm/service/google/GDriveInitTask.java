@@ -1,18 +1,25 @@
 package de.promotos.mm.service.google;
 
 import de.promotos.mm.service.DriveApi;
+import de.promotos.mm.service.ServiceException;
 import javafx.concurrent.Task;
 
 public class GDriveInitTask extends Task<DriveApi> {
 
 	@Override
 	protected DriveApi call() throws Exception {
-		final DriveApi result = new GDriveInstance();
+		final DriveApi api = new GDriveInstance();
 
 		updateMessage("Connect to GDrive");
-		result.connect();
+		api.connect();
+		if ( ! api.isConnected()) {
+			throw new ServiceException("Unable to connect to cloud");
+		}
 		
-		return result;
+		updateMessage("Initialize GDrive");
+		api.initialize();
+		
+		return api;
 	}
 
 }
