@@ -1,2 +1,3 @@
 # MyMusic
-Music player with google drive access
+Music player with cloud drive access.
+First implementation with Google drive.
