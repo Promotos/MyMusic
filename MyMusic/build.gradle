@@ -6,7 +6,7 @@ apply plugin: 'application'
 mainClassName = 'de.promotos.mm.MyMusicApp'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '1.0'
+version = '0.1-alpha'
 
 repositories {
     mavenCentral()

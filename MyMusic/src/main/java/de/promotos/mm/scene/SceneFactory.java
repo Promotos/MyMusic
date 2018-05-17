@@ -3,7 +3,6 @@ package de.promotos.mm.scene;
 import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 
 public class SceneFactory {
 

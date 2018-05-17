@@ -1,8 +1,10 @@
 package de.promotos.mm.service.google;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -18,7 +20,6 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 
 import de.promotos.mm.MyMusicApp;
 import de.promotos.mm.service.DriveApi;
@@ -36,6 +37,10 @@ public class GDriveInstance implements DriveApi {
 	/** Directory to store user credentials. */
 	private static final java.io.File DATA_STORE_DIR = new java.io.File(System.getProperty("user.home"), ".myMusic");
 
+	private static final String CLOUD_BASE_FOLDER = "myMusic";
+	
+	private final static String MIME_TYPE_FOLDER = "application/vnd.google-apps.folder";
+	
 	/**
 	 * Global instance of the {@link DataStoreFactory}. The best practice is to make
 	 * it a single globally shared instance across your application.
@@ -65,13 +70,10 @@ public class GDriveInstance implements DriveApi {
 				.setApplicationName(APPLICATION_NAME)
 				.build();
 
-			//System.out.println(" connected as " + drive.about().get().execute().getUser().getDisplayName());
-			
+			/*
 			System.out.println(drive.getApplicationName());
 
 			FileList result = drive.files().list().setQ("mimeType = 'audio/mp3'").execute();
-			// .setPageSize(10)
-			// .setFields("nextPageToken, files(id, name)")
 
 			List<File> files = result.getFiles();
 			if (files == null || files.isEmpty()) {
@@ -82,7 +84,7 @@ public class GDriveInstance implements DriveApi {
 				for (File file : files) {
 					System.out.printf("%s - %s (%s)\n", file.getName(), file.getMimeType(), file.getId());
 				}
-			}
+			}*/
 			
 		} catch (Exception e) {
 			throw new ServiceException("Unable to connect to Google Drive.", e);
@@ -139,5 +141,50 @@ public class GDriveInstance implements DriveApi {
 				clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(dataStoreFactory).build();
 		return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
 	}
+
+	@Override
+	public void initialize() throws ServiceException {
+		final Optional<File> baseFolder = getFolder(CLOUD_BASE_FOLDER);
+		
+		if ( ! baseFolder.isPresent()) {
+			createFolder(CLOUD_BASE_FOLDER);
+			final Optional<File> verify = getFolder(CLOUD_BASE_FOLDER);
+			if ( ! verify.isPresent()) {
+				throw new ServiceException("Cloud base folder could not be created.");
+			}
+		}
+	}
 	
+	private File createFolder(final String name) throws ServiceException {
+		try {
+			final File fileMetadata = new File();
+			fileMetadata.setName(CLOUD_BASE_FOLDER);
+			fileMetadata.setMimeType(MIME_TYPE_FOLDER);
+
+			final File file = drive.files().create(fileMetadata)
+			    .setFields("id")
+			    .execute();
+			return file;
+		} catch (IOException e) {
+			throw new ServiceException("Could not create base folder.", e);
+		}
+	}
+	
+	private Optional<File> getFolder(final String name) throws ServiceException {
+		try {
+			final List<File> matches = drive.files().list()
+				.setQ(String.format("name='%s' and mimeType = '%s'", CLOUD_BASE_FOLDER, MIME_TYPE_FOLDER)).execute()
+				.getFiles();
+
+			if (matches.isEmpty()) {
+				return Optional.empty();
+			} else if (matches.size() > 1) {
+				throw new ServiceException("More than one folder matches the name");
+			}
+			
+			return Optional.of(matches.get(0));
+		} catch (IOException e) {
+			throw new ServiceException("Error while reading folder structure");
+		}
+	}
 }
