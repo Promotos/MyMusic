@@ -30,3 +30,14 @@ dependencies {
     compile 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
 }
 
+task uberJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'My Music - Cloud music player',  
+        	'Implementation-Version': version,
+        	'Main-Class': mainClassName
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
