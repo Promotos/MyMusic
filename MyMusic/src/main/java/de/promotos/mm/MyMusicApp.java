@@ -10,6 +10,7 @@ import de.promotos.mm.scene.SplashScene;
 import de.promotos.mm.service.DriveApi;
 import de.promotos.mm.service.InitTaskFactory;
 import de.promotos.mm.service.Logging;
+import de.promotos.mm.service.ServiceException;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -62,7 +63,9 @@ public class MyMusicApp extends Application {
 	        controller = loader.getController();
 	        controller.update("Hallo");
 	        
-		} catch (IOException e) {
+	        api.listAudioFiles().stream().forEach(System.out::println);
+	        
+		} catch (IOException | ServiceException e) {
 			LOG.log(Level.SEVERE, "Error while show the main screen.", e);
 		}
 	}
