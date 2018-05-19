@@ -1,5 +1,8 @@
 package de.promotos.mm.scene;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -23,13 +26,15 @@ import javafx.util.Duration;
 
 public class SplashScene extends VBox {
 
+	private final static Logger LOG = Logger.getLogger(SplashScene.class.getName());
+	
 	private static final String APP_TITLE = "MyMusic - Loading";
 	
 	private final Pane splashLayout;
 	private final ProgressBar loadProgress;
 	private final Label progressText;
-	private static final int SPLASH_WIDTH = 150;
-	private static final int SPLASH_HEIGHT = 227;
+	private static final double SPLASH_WIDTH = 150;
+	private static final double SPLASH_HEIGHT = 227;
 
 	public SplashScene() {
 		loadProgress = new ProgressBar();
@@ -48,7 +53,7 @@ public class SplashScene extends VBox {
 		task.exceptionProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				final Exception ex = (Exception) newValue;
-				ex.printStackTrace();
+				LOG.log(Level.SEVERE, "Error while init of Application.", ex);
 				
 				Alert alert = new Alert(AlertType.ERROR, ex.getMessage() + "\nApplication will exit.");
 				alert.showAndWait();
@@ -74,8 +79,8 @@ public class SplashScene extends VBox {
 		Scene splashScene = new Scene(splashLayout, Color.TRANSPARENT);
 		final Rectangle2D bounds = Screen.getPrimary().getBounds();
 		initStage.setScene(splashScene);
-		initStage.setX(bounds.getMinX() + bounds.getWidth() / 2 - SPLASH_WIDTH / 2);
-		initStage.setY(bounds.getMinY() + bounds.getHeight() / 2 - SPLASH_HEIGHT / 2);
+		initStage.setX(bounds.getMinX() + bounds.getWidth() / (double) 2 - SPLASH_WIDTH / (double) 2);
+		initStage.setY(bounds.getMinY() + bounds.getHeight() / (double) 2 - SPLASH_HEIGHT / (double) 2);
 		initStage.initStyle(StageStyle.TRANSPARENT);
 		initStage.show();
 	}
@@ -83,7 +88,7 @@ public class SplashScene extends VBox {
 	private void init() {
 		final ImageView splash = new ImageView(ImageFactory.getSplashImage());
 		
-		loadProgress.setPrefWidth(SPLASH_WIDTH - 20);
+		loadProgress.setPrefWidth(SPLASH_WIDTH - (double) 20);
 		progressText.setAlignment(Pos.CENTER);
 
 		splashLayout.getChildren().addAll(splash, loadProgress, progressText);

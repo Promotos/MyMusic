@@ -1,5 +1,9 @@
 package de.promotos.mm.service;
 
+import java.util.List;
+
+import de.promotos.mm.service.model.FileModel;
+
 public interface DriveApi {
 
 	/**
@@ -24,4 +28,6 @@ public interface DriveApi {
 	 * @throws ServiceException Multiple reasons
 	 */
 	void initialize() throws ServiceException;
+	
+	List<FileModel> listAudioFiles() throws ServiceException;
 }

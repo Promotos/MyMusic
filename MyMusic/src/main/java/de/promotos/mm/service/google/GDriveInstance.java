@@ -5,6 +5,9 @@ import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -20,13 +23,18 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 
 import de.promotos.mm.MyMusicApp;
 import de.promotos.mm.service.DriveApi;
 import de.promotos.mm.service.ServiceException;
+import de.promotos.mm.service.model.FileModel;
+import de.promotos.mm.service.model.ModelFactory;
 
 public class GDriveInstance implements DriveApi {
 
+	private final static Logger LOG = Logger.getLogger(GDriveInstance.class.getName());
+	
 	/**
 	 * Be sure to specify the name of your application. If the application name is
 	 * {@code null} or blank, the application will log a warning. Suggested format
@@ -70,22 +78,7 @@ public class GDriveInstance implements DriveApi {
 				.setApplicationName(APPLICATION_NAME)
 				.build();
 
-			/*
-			System.out.println(drive.getApplicationName());
-
-			FileList result = drive.files().list().setQ("mimeType = 'audio/mp3'").execute();
-
-			List<File> files = result.getFiles();
-			if (files == null || files.isEmpty()) {
-				System.out.println("No files found - create one.");
-				//uploadFile();
-			} else {
-				System.out.println("Files:");
-				for (File file : files) {
-					System.out.printf("%s - %s (%s)\n", file.getName(), file.getMimeType(), file.getId());
-				}
-			}*/
-			
+			LOG.log(Level.INFO, "Connected to Google Drive.");
 		} catch (Exception e) {
 			throw new ServiceException("Unable to connect to Google Drive.", e);
 		}
@@ -147,11 +140,28 @@ public class GDriveInstance implements DriveApi {
 		final Optional<File> baseFolder = getFolder(CLOUD_BASE_FOLDER);
 		
 		if ( ! baseFolder.isPresent()) {
+			LOG.log(Level.INFO, "Cloud base folder is not available.");
 			createFolder(CLOUD_BASE_FOLDER);
 			final Optional<File> verify = getFolder(CLOUD_BASE_FOLDER);
 			if ( ! verify.isPresent()) {
 				throw new ServiceException("Cloud base folder could not be created.");
+			} else {
+				LOG.log(Level.INFO, "Cloud base folder is created.");				
 			}
+		} else {
+			LOG.log(Level.INFO, "Cloud base folder is available.");
+		}
+	}
+	
+	@Override
+	public List<FileModel> listAudioFiles() throws ServiceException {
+		try {
+			final FileList result = drive.files().list().setQ("mimeType = 'audio/mp3'").execute();
+			return result.getFiles().stream()
+				.map(f -> ModelFactory.createFile(f.getId(), f.getName()))
+				.collect(Collectors.toList());
+		} catch (IOException e) {
+			throw new ServiceException("Error while list the audio files.", e);
 		}
 	}
 	
