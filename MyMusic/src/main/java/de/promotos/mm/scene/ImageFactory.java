@@ -6,7 +6,7 @@ public class ImageFactory {
 
 	private ImageFactory() {}
 	
-	public final static Image getAppIcon() {
+	public static final Image getAppIcon() {
 		return new Image(ImageFactory.class.getResourceAsStream("/image/Icon.png"));
 	}
 

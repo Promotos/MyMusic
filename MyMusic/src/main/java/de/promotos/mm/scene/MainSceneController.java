@@ -46,11 +46,6 @@ public class MainSceneController {
 		}
 	}
     
-    /*
-    @FXML protected void btnActionClick(ActionEvent event) {
-        System.out.println("button pressed");
-    }*/
-    
 	private void showErrorDialog(final Throwable throwable) {
 		Alert alert = new Alert(AlertType.ERROR, throwable.getMessage() );
 		alert.showAndWait();

@@ -33,7 +33,7 @@ import de.promotos.mm.service.model.ModelFactory;
 
 public class GDriveInstance implements DriveApi {
 
-	private final static Logger LOG = Logger.getLogger(GDriveInstance.class.getName());
+	private static final Logger LOG = Logger.getLogger(GDriveInstance.class.getName());
 	
 	/**
 	 * Be sure to specify the name of your application. If the application name is
@@ -47,7 +47,7 @@ public class GDriveInstance implements DriveApi {
 
 	private static final String CLOUD_BASE_FOLDER = "myMusic";
 	
-	private final static String MIME_TYPE_FOLDER = "application/vnd.google-apps.folder";
+	private static final String MIME_TYPE_FOLDER = "application/vnd.google-apps.folder";
 	
 	/**
 	 * Global instance of the {@link DataStoreFactory}. The best practice is to make
@@ -127,7 +127,7 @@ public class GDriveInstance implements DriveApi {
 	}
 	*/
 
-	private Credential authorize() throws Exception {
+	private Credential authorize() throws IOException {
 		final GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
 				new InputStreamReader(MyMusicApp.class.getResourceAsStream("/secret.json")));
 		final GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
@@ -168,13 +168,12 @@ public class GDriveInstance implements DriveApi {
 	private File createFolder(final String name) throws ServiceException {
 		try {
 			final File fileMetadata = new File();
-			fileMetadata.setName(CLOUD_BASE_FOLDER);
+			fileMetadata.setName(name);
 			fileMetadata.setMimeType(MIME_TYPE_FOLDER);
 
-			final File file = drive.files().create(fileMetadata)
+			return drive.files().create(fileMetadata)
 			    .setFields("id")
 			    .execute();
-			return file;
 		} catch (IOException e) {
 			throw new ServiceException("Could not create base folder.", e);
 		}
@@ -183,7 +182,7 @@ public class GDriveInstance implements DriveApi {
 	private Optional<File> getFolder(final String name) throws ServiceException {
 		try {
 			final List<File> matches = drive.files().list()
-				.setQ(String.format("name='%s' and mimeType = '%s'", CLOUD_BASE_FOLDER, MIME_TYPE_FOLDER)).execute()
+				.setQ(String.format("name='%s' and mimeType = '%s'", name, MIME_TYPE_FOLDER)).execute()
 				.getFiles();
 
 			if (matches.isEmpty()) {

@@ -10,11 +10,7 @@ import de.promotos.mm.scene.SplashScene;
 import de.promotos.mm.service.DriveApi;
 import de.promotos.mm.service.InitTaskFactory;
 import de.promotos.mm.service.Logging;
-import de.promotos.mm.service.ServiceException;
-import de.promotos.mm.service.model.FileModel;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,11 +19,8 @@ import javafx.stage.StageStyle;
 
 public class MyMusicApp extends Application {
 
-	private final static Logger LOG = Logger.getLogger(MyMusicApp.class.getName());
-	
-	private final String APP_TITLE = "MyMusic - Cloud Music Player";
-	
-	private Stage mainStage;
+	private static final Logger LOG = Logger.getLogger(MyMusicApp.class.getName());
+	private static final String APP_TITLE = "MyMusic - Cloud Music Player";
 	
 	public static void main(String[] args) {
 		
@@ -50,7 +43,7 @@ public class MyMusicApp extends Application {
 	
 	private void showMainScene(Task<DriveApi> initTask) {
 		try {
-	        mainStage = new Stage(StageStyle.DECORATED);
+			final Stage mainStage = new Stage(StageStyle.DECORATED);
 	        mainStage.setTitle(APP_TITLE);
 	        mainStage.getIcons().add(ImageFactory.getAppIcon());
 
