@@ -11,7 +11,10 @@ import de.promotos.mm.service.DriveApi;
 import de.promotos.mm.service.InitTaskFactory;
 import de.promotos.mm.service.Logging;
 import de.promotos.mm.service.ServiceException;
+import de.promotos.mm.service.model.FileModel;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,10 +28,7 @@ public class MyMusicApp extends Application {
 	private final String APP_TITLE = "MyMusic - Cloud Music Player";
 	
 	private Stage mainStage;
-	private MainSceneController controller;
 	
-	private DriveApi api;
-
 	public static void main(String[] args) {
 		
 		try {
@@ -50,8 +50,6 @@ public class MyMusicApp extends Application {
 	
 	private void showMainScene(Task<DriveApi> initTask) {
 		try {
-			api = initTask.valueProperty().get();
-			
 	        mainStage = new Stage(StageStyle.DECORATED);
 	        mainStage.setTitle(APP_TITLE);
 	        mainStage.getIcons().add(ImageFactory.getAppIcon());
@@ -60,12 +58,11 @@ public class MyMusicApp extends Application {
 	        mainStage.setScene(new Scene(loader.load()));
 	        mainStage.show();
 
-	        controller = loader.getController();
-	        controller.update("Hallo");
+	        MainSceneController controller = loader.getController();
+	        controller.setApi(initTask.valueProperty().get());
+	        controller.refresh();
 	        
-	        api.listAudioFiles().stream().forEach(System.out::println);
-	        
-		} catch (IOException | ServiceException e) {
+		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Error while show the main screen.", e);
 		}
 	}

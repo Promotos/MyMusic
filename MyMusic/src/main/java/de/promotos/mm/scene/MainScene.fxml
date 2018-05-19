@@ -57,20 +57,19 @@
         <children>
           <Label alignment="TOP_LEFT" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Files" textAlignment="CENTER" textFill="$x2" wrapText="false" />
                   <Label layoutX="14.0" layoutY="41.0" text="Available audio files on the cloud" />
-                  <TableView layoutX="14.0" layoutY="58.0" prefHeight="443.0" prefWidth="366.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="58.0">
+                  <TableView fx:id="tvFilesTable" layoutX="14.0" layoutY="58.0" prefHeight="443.0" prefWidth="366.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="58.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="C1" />
-                      <TableColumn prefWidth="75.0" text="C2" />
+                      <TableColumn fx:id="colName" minWidth="100.0" prefWidth="300.0" text="Name" />
                     </columns>
                   </TableView>
                   <Button layoutX="14.0" layoutY="511.0" mnemonicParsing="false" text="Upload" />
-                  <Button layoutX="76.0" layoutY="511.0" mnemonicParsing="false" text="Delete" />
+                  <Button layoutX="140.0" layoutY="511.0" mnemonicParsing="false" text="Delete" />
+                  <Button layoutX="69.0" layoutY="511.0" mnemonicParsing="false" text="Download" />
         </children>
       </AnchorPane>
         <AnchorPane prefHeight="351.0" prefWidth="150.0">
           <children>
             <Label alignment="TOP_LEFT" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Player" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-                  <Button fx:id="btnAction" layoutX="12.0" layoutY="511.0" mnemonicParsing="false" onAction="#btnActionClick" text="Button" />
                   <Label layoutX="14.0" layoutY="41.0" text="Files selected for playback" />
           </children>
         </AnchorPane>
