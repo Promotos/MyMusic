@@ -1,5 +1,7 @@
 package de.promotos.mm;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.promotos.mm.scene.ImageFactory;
 import de.promotos.mm.scene.MainSceneController;
@@ -7,6 +9,7 @@ import de.promotos.mm.scene.SceneFactory;
 import de.promotos.mm.scene.SplashScene;
 import de.promotos.mm.service.DriveApi;
 import de.promotos.mm.service.InitTaskFactory;
+import de.promotos.mm.service.Logging;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -16,14 +19,25 @@ import javafx.stage.StageStyle;
 
 public class MyMusicApp extends Application {
 
+	private final static Logger LOG = Logger.getLogger(MyMusicApp.class.getName());
+	
 	private final String APP_TITLE = "MyMusic - Cloud Music Player";
+	
 	private Stage mainStage;
 	private MainSceneController controller;
 	
 	private DriveApi api;
 
 	public static void main(String[] args) {
+		
+		try {
+			Logging.enable();
+		} catch (SecurityException | IOException e) {
+			throw new IllegalStateException("Unable to initialize logging.", e);
+		}
+		
 		MyMusicApp.launch(args);
+		
 	}
 	
 	@Override
@@ -49,7 +63,7 @@ public class MyMusicApp extends Application {
 	        controller.update("Hallo");
 	        
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, "Error while show the main screen.", e);
 		}
 	}
 	
