@@ -26,8 +26,7 @@ import javafx.util.Duration;
 
 public class SplashScene extends VBox {
 
-	private final static Logger LOG = Logger.getLogger(SplashScene.class.getName());
-	
+	private static final Logger LOG = Logger.getLogger(SplashScene.class.getName());
 	private static final String APP_TITLE = "MyMusic - Loading";
 	
 	private final Pane splashLayout;
@@ -73,7 +72,7 @@ public class SplashScene extends VBox {
 				fadeSplash.play();
 
 				initCompletionHandler.run();
-			} // todo add code to gracefully handle other task states.
+			}
 		});
 
 		Scene splashScene = new Scene(splashLayout, Color.TRANSPARENT);
