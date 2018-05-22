@@ -5,12 +5,16 @@ import de.promotos.mm.service.ServiceException;
 import de.promotos.mm.service.model.FileModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  * Controller class for the main screen.
@@ -21,6 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class MainSceneController {
 
 	private CloudApi api;
+	private Stage stage;
 	private final ObservableList<FileModel> fileTableData = FXCollections.observableArrayList();
 
 	@FXML
@@ -28,6 +33,9 @@ public class MainSceneController {
 
 	@FXML
 	private TableColumn<FileModel, String> colName;
+
+	@FXML
+	private Button btnUpload;
 
 	/**
 	 * Executed after the controller is created and the components are bound to
@@ -42,16 +50,28 @@ public class MainSceneController {
 	/**
 	 * Used to set the cloud api access.
 	 * 
-	 * @param api The cloud api instance.
+	 * @param api
+	 *           The cloud api instance.
 	 */
 	public void setApi(final CloudApi api) {
 		this.api = api;
 	}
 
 	/**
+	 * Access to the ui stage.
+	 * 
+	 * @param stage
+	 *           The stage instance.
+	 */
+	public void setStage(final Stage stage) {
+		this.stage = stage;
+	}
+
+	/**
 	 * Update the available file list in the main table.
 	 * 
-	 * @throws ServiceException If the cloud api call fail.
+	 * @throws ServiceException
+	 *            If the cloud api call fail.
 	 */
 	public void updateFiles() throws ServiceException {
 		fileTableData.clear();
@@ -67,6 +87,12 @@ public class MainSceneController {
 		} catch (ServiceException e) {
 			showErrorDialog(e);
 		}
+	}
+
+	@FXML
+	private void btnUploadOnAction(ActionEvent event) {
+		FileChooser fileChooser = UIComponentFactory.buildAudioFileChooser();
+		fileChooser.showOpenDialog(stage);
 	}
 
 	private static void showErrorDialog(final Throwable throwable) {

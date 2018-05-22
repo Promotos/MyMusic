@@ -62,7 +62,7 @@
                       <TableColumn fx:id="colName" minWidth="100.0" prefWidth="300.0" text="Name" />
                     </columns>
                   </TableView>
-                  <Button layoutX="14.0" layoutY="511.0" mnemonicParsing="false" text="Upload" />
+                  <Button fx:id="btnUpload" layoutX="14.0" layoutY="511.0" mnemonicParsing="false" onAction="#btnUploadOnAction" text="Upload" />
                   <Button layoutX="140.0" layoutY="511.0" mnemonicParsing="false" text="Delete" />
                   <Button layoutX="69.0" layoutY="511.0" mnemonicParsing="false" text="Download" />
         </children>

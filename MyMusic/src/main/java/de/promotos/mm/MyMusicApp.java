@@ -43,7 +43,8 @@ public class MyMusicApp extends Application {
 	/**
 	 * Java application entry.
 	 * 
-	 * @param args The command line arguments.
+	 * @param args
+	 *           The command line arguments.
 	 */
 	public static void main(String[] args) {
 
@@ -77,6 +78,7 @@ public class MyMusicApp extends Application {
 			mainStage.show();
 
 			MainSceneController controller = loader.getController();
+			controller.setStage(mainStage);
 			controller.setApi(Assert.nN(initTask.valueProperty().get()));
 			controller.refresh();
 
