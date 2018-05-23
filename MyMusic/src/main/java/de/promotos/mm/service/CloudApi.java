@@ -40,6 +40,15 @@ public interface CloudApi {
 	void initialize() throws ServiceException;
 
 	/**
+	 * Get the user quota string.
+	 * 
+	 * @return The string with user quota information.
+	 * @throws ServiceException
+	 *            Thrown if the api call failed.
+	 */
+	String getUserQuota() throws ServiceException;
+
+	/**
 	 * List all remote available audio files.
 	 * 
 	 * @return The list of available audio files.
@@ -47,4 +56,15 @@ public interface CloudApi {
 	 *            Thrown if the api call failed.
 	 */
 	List<FileModel> listAudioFiles() throws ServiceException;
+
+	/**
+	 * Upload one file to the cloud backend folder.
+	 * 
+	 * @param file
+	 *           The file to upload.
+	 * @return The file model.
+	 * @throws ServiceException
+	 *            Thrown if the api call failed.
+	 */
+	FileModel uploadFile(java.io.File file) throws ServiceException;
 }

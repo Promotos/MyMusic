@@ -3,15 +3,13 @@ package de.promotos.mm.scene;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.promotos.mm.service.ErrorRunnable;
 import javafx.animation.FadeTransition;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.effect.DropShadow;
@@ -25,15 +23,15 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 /**
- * Splash scene shown upon application loading.
+ * Progress scene shown to the user for long running tasks.
  * 
  * @author Promotos
  *
  */
-public class SplashScene extends VBox {
+public class ProgressScene extends VBox {
 
-	private static final Logger LOG = Logger.getLogger(SplashScene.class.getName());
-	private static final String APP_TITLE = "MyMusic - Loading";
+	private static final Logger LOG = Logger.getLogger(ProgressScene.class.getName());
+	private static final String APP_TITLE = "Working";
 
 	private final Pane splashLayout;
 	private final ProgressBar loadProgress;
@@ -44,7 +42,7 @@ public class SplashScene extends VBox {
 	/**
 	 * Create a new instance of the splash scene.
 	 */
-	public SplashScene() {
+	public ProgressScene() {
 		loadProgress = new ProgressBar();
 		progressText = new Label("...");
 		splashLayout = new VBox();
@@ -57,10 +55,13 @@ public class SplashScene extends VBox {
 	 *           Stage instance to draw the splash scene content on.
 	 * @param task
 	 *           The task to be executed while the splash scene is displayed.
-	 * @param initCompletionHandler
+	 * @param completionHandler
 	 *           The task executed on completion of the worker task.
+	 * @param errorHandler
+	 *           The callback executed if an error on the worker task occur.
 	 */
-	public void show(final Stage initStage, Task<?> task, Runnable initCompletionHandler) {
+	public void show(final Stage initStage, final Task<?> task, final Runnable completionHandler,
+			final ErrorRunnable errorHandler) {
 		init();
 
 		initStage.setTitle(APP_TITLE);
@@ -71,11 +72,8 @@ public class SplashScene extends VBox {
 		task.exceptionProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				final Exception ex = (Exception) newValue;
-				LOG.log(Level.SEVERE, "Error while init of Application.", ex);
-
-				Alert alert = new Alert(AlertType.ERROR, ex.getMessage() + "\nApplication will exit.");
-				alert.showAndWait();
-				Platform.exit();
+				LOG.log(Level.SEVERE, "Error while executing task.", ex);
+				errorHandler.onError(ex);
 			}
 		});
 
@@ -90,7 +88,7 @@ public class SplashScene extends VBox {
 				fadeSplash.setOnFinished(actionEvent -> initStage.hide());
 				fadeSplash.play();
 
-				initCompletionHandler.run();
+				completionHandler.run();
 			}
 		});
 
