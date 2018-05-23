@@ -8,16 +8,19 @@ import javax.annotation.Nullable;
 
 import de.promotos.mm.scene.ImageFactory;
 import de.promotos.mm.scene.MainSceneController;
+import de.promotos.mm.scene.ProgressScene;
 import de.promotos.mm.scene.SceneFactory;
-import de.promotos.mm.scene.SplashScene;
 import de.promotos.mm.service.Assert;
 import de.promotos.mm.service.CloudApi;
-import de.promotos.mm.service.InitTaskFactory;
 import de.promotos.mm.service.Logging;
+import de.promotos.mm.service.TaskFactory;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -62,9 +65,16 @@ public class MyMusicApp extends Application {
 	 */
 	@Override
 	public void start(final @Nullable Stage primaryStage) throws Exception {
-		final Task<CloudApi> initTask = new InitTaskFactory().get();
-		new SplashScene().show(Assert.nN(primaryStage), initTask, () -> showMainScene(initTask));
+		final Task<CloudApi> initTask = new TaskFactory().buildInitTask();
+		new ProgressScene().show(Assert.nN(primaryStage), initTask, () -> showMainScene(initTask), e -> onError(e));
 		new Thread(initTask).start();
+	}
+
+	private static void onError(final Throwable e) {
+		final Alert alert = new Alert(AlertType.ERROR, e.getMessage() +
+				"\nApplication will exit.");
+		alert.showAndWait();
+		Platform.exit();
 	}
 
 	private static void showMainScene(Task<CloudApi> initTask) {

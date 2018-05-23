@@ -17,6 +17,7 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -164,6 +165,37 @@ public class GDriveInstance implements CloudApi {
 							.collect(Collectors.toList()));
 		} catch (IOException e) {
 			throw new ServiceException("Error while list the audio files.", e);
+		}
+	}
+
+	@Override
+	public String getUserQuota() throws ServiceException {
+		/*
+		 * TODO try { Drive.About about = drive.about();
+		 * 
+		 * Get get = about.get(); System.out.println(get);
+		 * 
+		 * } catch (IOException e) { throw new
+		 * ServiceException("Error while get user information.", e); }
+		 */
+		return "";
+	}
+
+	@Override
+	public FileModel uploadFile(java.io.File file) throws ServiceException {
+		try {
+			final File fileMetadata = new File();
+			fileMetadata.setName(file.getName());
+
+			final FileContent mediaContent = new FileContent("audio/mp3", file);
+
+			final File result = drive.files().create(fileMetadata, mediaContent)
+					.setFields("id,name")
+					.execute();
+
+			return ModelFactory.createFile(Assert.nN(result.getId()), Assert.nN(result.getName()));
+		} catch (IOException e) {
+			throw new ServiceException("Could not upload file " + file.getName(), e);
 		}
 	}
 
