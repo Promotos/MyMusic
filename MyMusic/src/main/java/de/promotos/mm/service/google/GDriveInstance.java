@@ -179,7 +179,7 @@ public class GDriveInstance implements CloudApi {
 					.setFields("id,name")
 					.execute();
 
-			LOG.log(Level.INFO, "Upload file {}", file.getName());
+			LOG.log(Level.INFO, "Upload file {0}", file.getName());
 			return ModelFactory.createFile(Assert.nN(result.getId()), Assert.nN(result.getName()));
 		} catch (IOException e) {
 			throw new ServiceException("Could not upload file " + file.getName(), e);
@@ -190,7 +190,7 @@ public class GDriveInstance implements CloudApi {
 	public void deleteFile(final FileModel file) throws ServiceException {
 		try {
 			if (file.getId() != null) {
-				LOG.log(Level.INFO, "Delete file {}", file.getName());
+				LOG.log(Level.INFO, "Delete file {0}", file.getName());
 				drive.files().delete(String.valueOf(file.getId())).execute();
 			}
 		} catch (IOException e) {

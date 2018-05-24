@@ -2,7 +2,6 @@ package de.promotos.mm.service;
 
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -34,14 +33,14 @@ public class TaskFactory {
 	 * 
 	 * @param api
 	 *           The cloud api instance.
-	 * @param file
-	 *           The file to upload.
+	 * @param files
+	 *           A list of files to upload.
 	 * @return The FileModel instance as optional or null if the upload was not
 	 *         executed. Maybe the file does not exist, is not readable or is not
 	 *         an mp3-file.
 	 */
-	public @Nonnull Task<Optional<FileModel>> buildUploadTask(final CloudApi api, final File file) {
-		return new GDriveUploadTask(api, file);
+	public @Nonnull Task<List<FileModel>> buildUploadTask(final CloudApi api, final List<File> files) {
+		return new GDriveUploadTask(api, files);
 	}
 
 	/**
@@ -56,4 +55,5 @@ public class TaskFactory {
 	public @Nonnull Task<Boolean> buildDeleteTask(final CloudApi api, final List<FileModel> files) {
 		return new GDriveDeleteTask(api, files);
 	}
+
 }
