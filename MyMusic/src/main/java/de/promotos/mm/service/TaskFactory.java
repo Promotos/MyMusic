@@ -44,6 +44,15 @@ public class TaskFactory {
 		return new GDriveUploadTask(api, file);
 	}
 
+	/**
+	 * Build the delete task
+	 * 
+	 * @param api
+	 *           Access to the api.
+	 * @param files
+	 *           The list of files to delete
+	 * @return Always true, or exception
+	 */
 	public @Nonnull Task<Boolean> buildDeleteTask(final CloudApi api, final List<FileModel> files) {
 		return new GDriveDeleteTask(api, files);
 	}
