@@ -98,20 +98,6 @@ public class GDriveInstance implements CloudApi {
 		return drive != null;
 	}
 
-	/*
-	 * private File uploadFile() throws IOException { java.io.File f = new
-	 * java.io.File("d:\\alf.mp3"); if (!f.exists()) { return null; }
-	 * 
-	 * File fileMetadata = new File(); fileMetadata.setName(f.getName());
-	 * 
-	 * FileContent mediaContent = new FileContent("audio/mp3", f);
-	 * 
-	 * Drive.Files.Create insert = drive.files().create(fileMetadata,
-	 * mediaContent); MediaHttpUploader uploader = insert.getMediaHttpUploader();
-	 * uploader.setDirectUploadEnabled(true); // uploader.setProgressListener(new
-	 * FileUploadProgressListener()); return insert.execute(); }
-	 */
-
 	/**
 	 * Downloads a file using either resumable or direct media download. private
 	 * static void downloadFile(boolean useDirectDownload, File uploadedFile)
@@ -193,9 +179,22 @@ public class GDriveInstance implements CloudApi {
 					.setFields("id,name")
 					.execute();
 
+			LOG.log(Level.INFO, "Upload file {}", file.getName());
 			return ModelFactory.createFile(Assert.nN(result.getId()), Assert.nN(result.getName()));
 		} catch (IOException e) {
 			throw new ServiceException("Could not upload file " + file.getName(), e);
+		}
+	}
+
+	@Override
+	public void deleteFile(final FileModel file) throws ServiceException {
+		try {
+			if (file.getId() != null) {
+				LOG.log(Level.INFO, "Delete file {}", file.getName());
+				drive.files().delete(String.valueOf(file.getId())).execute();
+			}
+		} catch (IOException e) {
+			throw new ServiceException("Could not delete file " + file.getName(), e);
 		}
 	}
 

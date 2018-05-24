@@ -1,7 +1,10 @@
 package de.promotos.mm.scene;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import de.promotos.mm.service.Assert;
 import de.promotos.mm.service.CloudApi;
@@ -17,6 +20,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -34,6 +38,7 @@ public class MainSceneController {
 
 	private CloudApi api;
 	private Stage stage;
+	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 	private final ObservableList<FileModel> fileTableData = FXCollections.observableArrayList();
 
 	@FXML
@@ -46,6 +51,12 @@ public class MainSceneController {
 	private Button btnUpload;
 
 	@FXML
+	private Button btnDownload;
+
+	@FXML
+	private Button btnDelete;
+
+	@FXML
 	private Label lbStatusBarLeft;
 
 	/**
@@ -55,6 +66,7 @@ public class MainSceneController {
 	@FXML
 	public void initialize() {
 		tvFilesTable.setItems(fileTableData);
+		tvFilesTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		colName.setCellValueFactory(new PropertyValueFactory<FileModel, String>("name"));
 	}
 
@@ -121,7 +133,24 @@ public class MainSceneController {
 			new ProgressScene().show(Assert.nN(new Stage(StageStyle.UNDECORATED)), uploadTask,
 					() -> refresh(),
 					error -> showErrorDialog(error));
-			new Thread(uploadTask).start();
+			executor.submit(uploadTask);
+		}
+	}
+
+	@FXML
+	private void btnDownloadOnAction(ActionEvent event) {
+
+	}
+
+	@FXML
+	private void btnDeleteOnAction(ActionEvent event) {
+		final List<FileModel> files = tvFilesTable.getSelectionModel().getSelectedItems();
+		if (files != null) {
+			final Task<Boolean> deleteTask = new TaskFactory().buildDeleteTask(Assert.nN(api), files);
+			new ProgressScene().show(Assert.nN(new Stage(StageStyle.UNDECORATED)), deleteTask,
+					() -> refresh(),
+					error -> showErrorDialog(error));
+			executor.submit(deleteTask);
 		}
 	}
 
