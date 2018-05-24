@@ -1,10 +1,12 @@
 package de.promotos.mm.service;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import de.promotos.mm.service.google.GDriveDeleteTask;
 import de.promotos.mm.service.google.GDriveInitTask;
 import de.promotos.mm.service.google.GDriveUploadTask;
 import de.promotos.mm.service.model.FileModel;
@@ -40,5 +42,9 @@ public class TaskFactory {
 	 */
 	public @Nonnull Task<Optional<FileModel>> buildUploadTask(final CloudApi api, final File file) {
 		return new GDriveUploadTask(api, file);
+	}
+
+	public @Nonnull Task<Boolean> buildDeleteTask(final CloudApi api, final List<FileModel> files) {
+		return new GDriveDeleteTask(api, files);
 	}
 }

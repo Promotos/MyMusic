@@ -67,4 +67,14 @@ public interface CloudApi {
 	 *            Thrown if the api call failed.
 	 */
 	FileModel uploadFile(java.io.File file) throws ServiceException;
+
+	/**
+	 * Delete a cloud files.
+	 * 
+	 * @param file
+	 *           The file model to delete.
+	 * @throws ServiceException
+	 *            If the api call throw an error.
+	 */
+	void deleteFile(FileModel file) throws ServiceException;
 }

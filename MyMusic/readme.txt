@@ -13,3 +13,5 @@ Must add &hd= to browser url
 
 Splash and App Icon Images from https://www.wpzoom.com/
 https://www.iconfinder.com/icons/111099/headphones_music_icon#size=64
+
+https://developers.google.com/drive/api/v3/about-sdk
