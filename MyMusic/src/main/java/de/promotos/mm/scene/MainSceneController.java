@@ -2,7 +2,6 @@ package de.promotos.mm.scene;
 
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -126,10 +125,10 @@ public class MainSceneController {
 	@FXML
 	private void btnUploadOnAction(ActionEvent event) {
 		final FileChooser fileChooser = UIComponentFactory.buildAudioFileChooser();
-		final File selectedFile = fileChooser.showOpenDialog(stage);
+		final List<File> selectedFiles = fileChooser.showOpenMultipleDialog(stage);
 
-		if (selectedFile != null) {
-			final Task<Optional<FileModel>> uploadTask = new TaskFactory().buildUploadTask(Assert.nN(api), selectedFile);
+		if (selectedFiles != null) {
+			final Task<List<FileModel>> uploadTask = new TaskFactory().buildUploadTask(Assert.nN(api), selectedFiles);
 			new ProgressScene().show(Assert.nN(new Stage(StageStyle.UNDECORATED)), uploadTask,
 					() -> refresh(),
 					error -> showErrorDialog(error));

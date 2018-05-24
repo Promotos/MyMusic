@@ -13,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -36,8 +35,8 @@ public class ProgressScene extends VBox {
 	private final Pane splashLayout;
 	private final ProgressBar loadProgress;
 	private final Label progressText;
-	private static final double SPLASH_WIDTH = 150;
-	private static final double SPLASH_HEIGHT = 227;
+	private static final double SPLASH_WIDTH = 300;
+	private static final double SPLASH_HEIGHT = 100;
 
 	/**
 	 * Create a new instance of the splash scene.
@@ -102,12 +101,14 @@ public class ProgressScene extends VBox {
 	}
 
 	private void init() {
-		final ImageView splash = new ImageView(ImageFactory.getSplashImage());
+		// final ImageView splash = new ImageView(ImageFactory.getSplashImage());
+
+		// splash.setX(100);
 
 		loadProgress.setPrefWidth(SPLASH_WIDTH - 20);
 		progressText.setAlignment(Pos.CENTER);
 
-		splashLayout.getChildren().addAll(splash, loadProgress, progressText);
+		splashLayout.getChildren().addAll(/* splash, */ loadProgress, progressText);
 		splashLayout.setStyle("-fx-padding: 5; "
 				+ "-fx-border-width:5; "
 				+ "-fx-border-color: "

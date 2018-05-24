@@ -1,10 +1,14 @@
 package de.promotos.mm.service.google;
 
-import java.util.Optional;
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
 import de.promotos.mm.service.CloudApi;
+import de.promotos.mm.service.FunctionWithException;
+import de.promotos.mm.service.ServiceException;
 import de.promotos.mm.service.model.FileModel;
 import javafx.concurrent.Task;
 
@@ -14,31 +18,38 @@ import javafx.concurrent.Task;
  * @author Promotos
  *
  */
-public class GDriveUploadTask extends Task<Optional<FileModel>> {
+public class GDriveUploadTask extends Task<List<FileModel>> {
 
 	private final @Nonnull CloudApi api;
-	private final @Nonnull java.io.File file;
+	private final @Nonnull List<File> files;
+	private final long max;
+	private int count = 0;
 
 	/**
 	 * Create a new instance of the upload task
 	 * 
 	 * @param api
 	 *           The api instance.
-	 * @param file
-	 *           The file to upload.
+	 * @param files
+	 *           The files to upload.
 	 */
-	public GDriveUploadTask(final CloudApi api, final java.io.File file) {
+	public GDriveUploadTask(final CloudApi api, final List<java.io.File> files) {
 		this.api = api;
-		this.file = file;
+		this.files = files;
+		max = files.size();
 	}
 
 	@Override
-	protected Optional<FileModel> call() throws Exception {
-		updateMessage("Upload " + file.getName());
-		if (file.exists() && file.canRead() && file.getName().endsWith("*.mp3")) {
-			return Optional.of(api.uploadFile(file));
-		}
-		return Optional.ofNullable(null);
+	protected List<FileModel> call() throws Exception {
+		return files.stream()
+				.filter(file -> !file.exists() || !file.canRead() || !file.getName().endsWith("*.mp3"))
+				.map(FunctionWithException.wrapper(file -> uploadFile(file)))
+				.collect(Collectors.toList());
 	}
 
+	private FileModel uploadFile(File f) throws ServiceException {
+		updateMessage("Upload " + f.getName());
+		updateProgress(count++, max);
+		return api.uploadFile(f);
+	}
 }
