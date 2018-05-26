@@ -3,6 +3,7 @@ package de.promotos.mm.service.google;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -56,9 +57,11 @@ public class GDriveInstance implements CloudApi {
 	/** Directory to store user credentials. */
 	private static final java.io.File DATA_STORE_DIR = new java.io.File(System.getProperty("user.home"), ".myMusic");
 
-	private static final @Nonnull String CLOUD_BASE_FOLDER = "myMusic";
+	private static final @Nonnull String BASE_FOLDER = "myMusic";
+	private File baseFolder;
 
 	private static final @Nonnull String MIME_TYPE_FOLDER = "application/vnd.google-apps.folder";
+	private static final @Nonnull String MIME_TYPE_MPEG = "audio/mpeg";
 
 	/**
 	 * Global instance of the {@link DataStoreFactory}. The best practice is to
@@ -126,18 +129,20 @@ public class GDriveInstance implements CloudApi {
 
 	@Override
 	public void initialize() throws ServiceException {
-		final Optional<File> baseFolder = getFolder(CLOUD_BASE_FOLDER);
+		final Optional<File> baseFolderOpt = getFolder(BASE_FOLDER);
 
-		if (!baseFolder.isPresent()) {
+		if (!baseFolderOpt.isPresent()) {
 			LOG.log(Level.INFO, "Cloud base folder is not available.");
-			createFolder(CLOUD_BASE_FOLDER);
-			final Optional<File> verify = getFolder(CLOUD_BASE_FOLDER);
+			createFolder(BASE_FOLDER);
+			final Optional<File> verify = getFolder(BASE_FOLDER);
 			if (!verify.isPresent()) {
 				throw new ServiceException("Cloud base folder could not be created.");
 			} else {
+				baseFolder = verify.get();
 				LOG.log(Level.INFO, "Cloud base folder is created.");
 			}
 		} else {
+			baseFolder = baseFolderOpt.get();
 			LOG.log(Level.INFO, "Cloud base folder is available.");
 		}
 	}
@@ -145,9 +150,12 @@ public class GDriveInstance implements CloudApi {
 	@Override
 	public List<FileModel> listAudioFiles() throws ServiceException {
 		try {
-			final FileList result = drive.files().list().setQ("mimeType = 'audio/mp3'").execute();
+			final String q = "'" + baseFolder.getId() + "' in parents";
+			final FileList result = drive.files().list().setQ(q).execute();
+
 			return Collections.unmodifiableList(
 					result.getFiles().stream()
+							.filter(f -> f.getName().endsWith(".mp3"))
 							.map(f -> ModelFactory.createFile(Assert.nN(f.getId()), Assert.nN(f.getName())))
 							.collect(Collectors.toList()));
 		} catch (IOException e) {
@@ -156,25 +164,13 @@ public class GDriveInstance implements CloudApi {
 	}
 
 	@Override
-	public String getUserQuota() throws ServiceException {
-		/*
-		 * TODO try { Drive.About about = drive.about();
-		 * 
-		 * Get get = about.get(); System.out.println(get);
-		 * 
-		 * } catch (IOException e) { throw new
-		 * ServiceException("Error while get user information.", e); }
-		 */
-		return "";
-	}
-
-	@Override
 	public FileModel uploadFile(java.io.File file) throws ServiceException {
 		try {
 			final File fileMetadata = new File();
 			fileMetadata.setName(file.getName());
+			fileMetadata.setParents(Arrays.asList(baseFolder.getId()));
 
-			final FileContent mediaContent = new FileContent("audio/mp3", file);
+			final FileContent mediaContent = new FileContent(MIME_TYPE_MPEG, file);
 
 			final File result = drive.files().create(fileMetadata, mediaContent)
 					.setFields("id,name")
@@ -199,6 +195,7 @@ public class GDriveInstance implements CloudApi {
 		}
 	}
 
+	@Override
 	public InputStream readFile(final FileModel file) throws ServiceException {
 		try {
 			return drive.files().get((String.valueOf(file.getId()))).executeMediaAsInputStream();

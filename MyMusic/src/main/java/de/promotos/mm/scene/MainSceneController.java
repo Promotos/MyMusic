@@ -129,22 +129,11 @@ public class MainSceneController {
 	}
 
 	/**
-	 * Update the status bar label with user quota information.
-	 * 
-	 * @throws ServiceException
-	 *            If the cloud api call fail.
-	 */
-	public void updateStatusBarLabel() throws ServiceException {
-		lbStatusBarLeft.setText(api.getUserQuota());
-	}
-
-	/**
 	 * Update all main scene components with the cloud information.
 	 */
 	public void refresh() {
 		try {
 			updateFiles();
-			updateStatusBarLabel();
 		} catch (ServiceException e) {
 			showErrorDialog(e);
 		}
@@ -216,6 +205,8 @@ public class MainSceneController {
 	}
 
 	private static void showErrorDialog(final Throwable throwable) {
+		throwable.printStackTrace();
+
 		Alert alert = new Alert(AlertType.ERROR, throwable.getMessage());
 		alert.showAndWait();
 	}
