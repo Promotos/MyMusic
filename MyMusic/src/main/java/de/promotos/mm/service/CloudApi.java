@@ -1,5 +1,6 @@
 package de.promotos.mm.service;
 
+import java.io.InputStream;
 import java.util.List;
 
 import de.promotos.mm.service.model.FileModel;
@@ -77,4 +78,16 @@ public interface CloudApi {
 	 *            If the api call throw an error.
 	 */
 	void deleteFile(FileModel file) throws ServiceException;
+
+	/**
+	 * Get the input stream for the content of a give file. The caller must close
+	 * this stream.
+	 * 
+	 * @param file
+	 *           The file instance to read the input for.
+	 * @return The input stream to read the content from.
+	 * @throws ServiceException
+	 *            If the api call throw an error.
+	 */
+	public InputStream readFile(final FileModel file) throws ServiceException;
 }

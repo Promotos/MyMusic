@@ -21,7 +21,7 @@ public final class Assert {
 	 * @param inst
 	 * @return The {@link Nonnull} checked intance of the argument.
 	 */
-	public final static @Nonnull <T> T nN(final @Nullable T inst) {
+	public static final @Nonnull <T> T nN(final @Nullable T inst) {
 		if (inst == null) {
 			throw new NullPointerException();
 		}

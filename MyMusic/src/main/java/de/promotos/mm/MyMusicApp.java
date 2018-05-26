@@ -23,6 +23,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 /**
  * Main entry class to start the application. First shows the splash screen,
@@ -66,7 +67,7 @@ public class MyMusicApp extends Application {
 	@Override
 	public void start(final @Nullable Stage primaryStage) throws Exception {
 		final Task<CloudApi> initTask = new TaskFactory().buildInitTask();
-		new ProgressScene().show(Assert.nN(primaryStage), initTask, () -> showMainScene(initTask), e -> onError(e));
+		new ProgressScene().show(Assert.nN(primaryStage), initTask, () -> showMainScene(initTask), MyMusicApp::onError);
 		new Thread(initTask).start();
 	}
 
@@ -87,7 +88,12 @@ public class MyMusicApp extends Application {
 			mainStage.setScene(new Scene(loader.load()));
 			mainStage.show();
 
-			MainSceneController controller = loader.getController();
+			final MainSceneController controller = loader.getController();
+			mainStage.setOnCloseRequest((WindowEvent event1) -> {
+				controller.shutdown();
+				Platform.exit();
+				System.exit(0);
+			});
 			controller.setStage(mainStage);
 			controller.setApi(Assert.nN(initTask.valueProperty().get()));
 			controller.refresh();

@@ -1,6 +1,7 @@
 package de.promotos.mm.service.google;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
@@ -196,6 +197,15 @@ public class GDriveInstance implements CloudApi {
 		} catch (IOException e) {
 			throw new ServiceException("Could not delete file " + file.getName(), e);
 		}
+	}
+
+	public InputStream readFile(final FileModel file) throws ServiceException {
+		try {
+			return drive.files().get((String.valueOf(file.getId()))).executeMediaAsInputStream();
+		} catch (IOException e) {
+			throw new ServiceException("Could not create stream to file " + file.getName(), e);
+		}
+
 	}
 
 	private File createFolder(final String name) throws ServiceException {
